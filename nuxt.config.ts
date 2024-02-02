@@ -4,8 +4,15 @@ export default defineNuxtConfig({
     alias: {
         assets: "/<rootDir>//assets",
     },
+
     css: ["~/assets/css/main.css"],
-    modules: ["@nuxtjs/tailwindcss"],
+    postcss: {
+        plugins: {
+            tailwindcss: {},
+            autoprefixer: {},
+        },
+    },
+
     typescript: {
         typeCheck: true,
     },
