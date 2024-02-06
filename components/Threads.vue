@@ -3,31 +3,38 @@
 const { data: posts } = await useFetch<RootObject>("https://www.reddit.com/r/Universitaly/hot.json")
 
 const subredditNamePrefixed = posts.value?.data.children[0].data.subreddit_name_prefixed;
-/* category tagging background */
-const getCategoryClass = (category: string) => {
-    switch (category) {
-        case 'Ingegneria e Tecnologia':
-            return 'bg-purple-300';
-        case 'Discussione':
-            return 'bg-pink-300';
-        case 'Arte, Design, e Architettura':
-            return 'bg-cyan-300';
-        case 'Domanda Generica':
-            return 'bg-yellow-300';
-        case 'Consiglio':
-            return 'bg-green-300';
-        case 'Aiuto/Consiglio':
-            return 'bg-brown-300';
-        case 'Scienze Naturali':
-            return 'bg-blue-300';
-        default:
-            return 'bg-red-300';
-    }
-};
-/* random user color */
-const getRandomColor = () => {
-    return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
 
+/* random user color */
+const getFillColor = (color: string | null) => {
+    // Se il colore è null, restituisci un colore predefinito
+    if (color === null) {
+        return '#ff33cc'; // Colore predefinito, puoi cambiarlo a tuo piacimento
+    }
+    // Altrimenti, restituisci il colore
+    return color;
+}
+
+const formatTime = (timestamp: number) => {
+    const now = new Date();
+    const postDate = new Date(timestamp * 1000); // Converti il timestamp in millisecondi
+    const secondsPast = Math.floor((now.getTime() - postDate.getTime()) / 1000);
+
+    if (secondsPast < 60) {
+        return `${secondsPast} seconds ago`;
+    }
+    if (secondsPast < 3600) {
+        return `${Math.floor(secondsPast / 60)} minutes ago`;
+    }
+    if (secondsPast <= 86400) {
+        return `${Math.floor(secondsPast / 3600)} hours ago`;
+    }
+    if (secondsPast > 86400) {
+        let day = postDate.getDate();
+        let monthMatch = postDate.toDateString().match(/ [a-zA-Z]*/);
+        let month = monthMatch ? monthMatch[0].replace(" ", "") : "";
+        let year = postDate.getFullYear() == now.getFullYear() ? "" : " " + postDate.getFullYear();
+        return `${day} ${month}${year}`;
+    }
 }
 
 interface Source {
@@ -379,91 +386,55 @@ const json: RootObject = {
 </script>
 
 <template>
+    <div class="relative my-2 mx-6 md:ml-[29%] h-20 w-auto rounded-xl bg-gray-600"> </div>
     <div class="mx-6 md:mx-[30%] ">
         <!-- reddit header -->
-        <div class="relative mb-8">
-            <img src="../public/assets/img/redditAvatar.png" alt="subreddit-logo" class="flex h-16 rounded-full ">
-            <div class="absolute bottom-0 pt-6 text-3xl font-bold left-16"> {{ subredditNamePrefixed }}
+        <div class="relative pt-6 mb-8 ">
+            <img src="../public/assets/img/redditAvatar.png" alt="subreddit-logo"
+                class="absolute bottom-0 h-20 transform border-2 border-solid rounded-full -translate-y-1/4">
+            <div class="relative px-6 text-3xl font-bold -translate-y-1/2 left-16"> {{ subredditNamePrefixed }}
             </div>
         </div>
         <!-- post section -->
         <div v-for="post in posts?.data.children" class="my-2 ">
-            <!-- avatar + author -->
-            <hr class="flex items-center justify-center border-y-grey-900">
-            <div class="px-4 py-2 hover:bg-gray-100 rounded-xl">
-                <div class="flex w-full gap-2 align-baseline ">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" class="h-8 fill-current rouded-full">
-                        <path fill="#currentColor"
-                            d="M2.938 18.734c-.078.365-.12.745-.12 1.125c0 4.594 5.87 8.333 13.083 8.333s13.083-3.74 13.083-8.333a5.32 5.32 0 0 0-.109-1.078l-.021-.042a.645.645 0 0 1-.036-.219c-.401-1.568-1.49-2.99-3.063-4.141a.728.728 0 0 1-.167-.089a.68.68 0 0 1-.089-.089c-2.391-1.646-5.807-2.677-9.594-2.677c-3.755 0-7.141 1.01-9.531 2.63a.34.34 0 0 1-.063.063a.435.435 0 0 1-.177.099c-1.604 1.151-2.719 2.583-3.135 4.167a.613.613 0 0 1-.052.229zm13.031 7.25c-2.391 0-4.073-.516-5.151-1.594a.604.604 0 0 1 0-.844a.63.63 0 0 1 .849 0c.839.839 2.245 1.26 4.302 1.26s3.453-.401 4.292-1.24c.219-.219.599-.219.839 0c.219.24.219.62 0 .859c-1.078 1.078-2.75 1.599-5.146 1.599zm-4.808-10.093c-1.219 0-2.234 1.021-2.234 2.234s1.016 2.198 2.234 2.198c1.219 0 2.203-.984 2.203-2.198s-.99-2.234-2.203-2.234m9.646 0c-1.219 0-2.24 1.021-2.24 2.234s1.021 2.198 2.24 2.198c1.219 0 2.198-.984 2.198-2.198s-.984-2.234-2.198-2.234m6.063-2.131c1.38 1.115 2.401 2.432 2.917 3.875a2.392 2.392 0 0 0 .958-1.932a2.42 2.42 0 0 0-3.875-1.938zm-23.255-.474a2.42 2.42 0 0 0-2.422 2.422c0 .724.318 1.396.859 1.854c.531-1.443 1.563-2.74 2.948-3.839a2.443 2.443 0 0 0-1.385-.438zm12.291 16.105c-7.875 0-14.281-4.276-14.281-9.526c0-.365.031-.724.089-1.078A3.623 3.623 0 0 1 0 15.704c0-1.995 1.635-3.62 3.635-3.62c.896 0 1.734.328 2.396.911c2.474-1.589 5.807-2.589 9.479-2.656l2.417-7.365l.542.125s.021 0 .021.005l5.63 1.323a2.997 2.997 0 0 1 2.75-1.813c1.641 0 2.979 1.339 2.979 2.979S28.51 8.572 26.87 8.572a2.98 2.98 0 0 1-2.969-2.974l-5.135-1.219l-1.958 5.969c3.536.141 6.729 1.141 9.125 2.698a3.548 3.548 0 0 1 2.443-.958c2 0 3.625 1.615 3.625 3.615c0 1.313-.719 2.51-1.839 3.151c.042.339.083.661.083 1c-.021 5.25-6.411 9.521-14.297 9.521zM26.807 3.807c-.984 0-1.786.797-1.786 1.781s.802 1.786 1.786 1.786c.979 0 1.776-.797 1.776-1.776s-.797-1.776-1.797-1.776z" />
-                    </svg>
+            <NuxtLink :to="'threads/' + post.data.id">
+                <!-- avatar + author + timestamp -->
+                <hr class="flex items-center justify-center border-y-grey-900">
+                <div class="px-4 py-2 hover:bg-gray-100 rounded-xl">
+                    <div class="flex w-full gap-2 align-baseline ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" class="h-8 fill-current rouded-full"
+                            :style="{ fill: getFillColor(post.data.link_flair_background_color) }">
+                            <path fill="#currentColor"
+                                d="M2.938 18.734c-.078.365-.12.745-.12 1.125c0 4.594 5.87 8.333 13.083 8.333s13.083-3.74 13.083-8.333a5.32 5.32 0 0 0-.109-1.078l-.021-.042a.645.645 0 0 1-.036-.219c-.401-1.568-1.49-2.99-3.063-4.141a.728.728 0 0 1-.167-.089a.68.68 0 0 1-.089-.089c-2.391-1.646-5.807-2.677-9.594-2.677c-3.755 0-7.141 1.01-9.531 2.63a.34.34 0 0 1-.063.063a.435.435 0 0 1-.177.099c-1.604 1.151-2.719 2.583-3.135 4.167a.613.613 0 0 1-.052.229zm13.031 7.25c-2.391 0-4.073-.516-5.151-1.594a.604.604 0 0 1 0-.844a.63.63 0 0 1 .849 0c.839.839 2.245 1.26 4.302 1.26s3.453-.401 4.292-1.24c.219-.219.599-.219.839 0c.219.24.219.62 0 .859c-1.078 1.078-2.75 1.599-5.146 1.599zm-4.808-10.093c-1.219 0-2.234 1.021-2.234 2.234s1.016 2.198 2.234 2.198c1.219 0 2.203-.984 2.203-2.198s-.99-2.234-2.203-2.234m9.646 0c-1.219 0-2.24 1.021-2.24 2.234s1.021 2.198 2.24 2.198c1.219 0 2.198-.984 2.198-2.198s-.984-2.234-2.198-2.234m6.063-2.131c1.38 1.115 2.401 2.432 2.917 3.875a2.392 2.392 0 0 0 .958-1.932a2.42 2.42 0 0 0-3.875-1.938zm-23.255-.474a2.42 2.42 0 0 0-2.422 2.422c0 .724.318 1.396.859 1.854c.531-1.443 1.563-2.74 2.948-3.839a2.443 2.443 0 0 0-1.385-.438zm12.291 16.105c-7.875 0-14.281-4.276-14.281-9.526c0-.365.031-.724.089-1.078A3.623 3.623 0 0 1 0 15.704c0-1.995 1.635-3.62 3.635-3.62c.896 0 1.734.328 2.396.911c2.474-1.589 5.807-2.589 9.479-2.656l2.417-7.365l.542.125s.021 0 .021.005l5.63 1.323a2.997 2.997 0 0 1 2.75-1.813c1.641 0 2.979 1.339 2.979 2.979S28.51 8.572 26.87 8.572a2.98 2.98 0 0 1-2.969-2.974l-5.135-1.219l-1.958 5.969c3.536.141 6.729 1.141 9.125 2.698a3.548 3.548 0 0 1 2.443-.958c2 0 3.625 1.615 3.625 3.615c0 1.313-.719 2.51-1.839 3.151c.042.339.083.661.083 1c-.021 5.25-6.411 9.521-14.297 9.521zM26.807 3.807c-.984 0-1.786.797-1.786 1.781s.802 1.786 1.786 1.786c.979 0 1.776-.797 1.776-1.776s-.797-1.776-1.797-1.776z" />
+                        </svg>
 
-                    <p class="text-end">{{ post.data.author }}</p>
-                    <!--  <span>{{post.data.}}</span> -->
-                </div>
-                <!-- post title + text -->
-                <div>
-                    <h1 class="flex text-sm font-bold leading-5 text-black ">{{ post.data.title }}</h1>
-                    <p class="text-sm leading-5 line-clamp-3 xl:line-clamp-5">{{ post.data.selftext }}</p>
-                </div>
-                <!-- category tag -->
-                <button v-if="post.data.link_flair_text" :class="getCategoryClass(post.data.link_flair_text)"
-                    class="p-1 my-2 text-sm rounded-xl">{{
-                        post.data.link_flair_text }}
-                </button>
-
-                <!-- footer :votes -->
-                <div class="flex gap-2 my-2 font-semibold text-white">
-                    <div class="flex items-center gap-1 p-1 bg-gray-400 rounded-2xl ">
-                        <!-- upvote -->
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
-                                class="h-5 text-white bg-gray-400 rounded-full fill-current hover:text-red-500 hover:bg-gray-200">
-                                <g transform="scale(0.125,0.125)">
-                                    <path fill="#currentColor"
-                                        d="m229.66 114.34l-96-96a8 8 0 0 0-11.32 0l-96 96A8 8 0 0 0 32 128h40v80a16 16 0 0 0 16 16h80a16 16 0 0 0 16-16v-80h40a8 8 0 0 0 5.66-13.66M176 112a8 8 0 0 0-8 8v88H88v-88a8 8 0 0 0-8-8H51.31L128 35.31L204.69 112Z" />
-                                </g>
-                            </svg>
-                        </button>
-                        <!-- total up/down score -->
-                        <p class="text-center align-middle">{{ post.data.score }}</p>
-                        <!-- downvote -->
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
-                                class="items-center h-5 text-white bg-gray-400 rounded-full fill-current hover:text-blue-500 hover:bg-gray-200">
-                                <g transform="scale(0.125,0.125)">
-                                    <path fill=""
-                                        d="M231.39 132.94A8 8 0 0 0 224 128h-40V48a16 16 0 0 0-16-16H88a16 16 0 0 0-16 16v80H32a8 8 0 0 0-5.66 13.66l96 96a8 8 0 0 0 11.32 0l96-96a8 8 0 0 0 1.73-8.72M128 220.69L51.31 144H80a8 8 0 0 0 8-8V48h80v88a8 8 0 0 0 8 8h28.69Z" />
-                                </g>
-                            </svg>
-                        </button>
+                        <p class="flex items-center justify-center gap-2 text-xs font-semibold">{{ post.data.author }}
+                            <span class="font-normal"> • {{ formatTime(post.data.created_utc)
+                            }}</span>
+                        </p>
                     </div>
-                    <!-- footer :comments -->
-                    <button
-                        class="flex items-center gap-1 p-2 font-semibold text-white bg-gray-400 rounded-2xl hover:bg-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
-                            class="items-center h-5 gap-2 font-semibold text-white bg-gray-400 rounded-full fill-current ">
-                            <g transform="scale(1.33333,1.33333)">
-                                <path fill="currentColor"
-                                    d="M5 3h13a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-4.59l-3.7 3.71c-.18.18-.43.29-.71.29a1 1 0 0 1-1-1v-3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3m13 1H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h4v4l4-4h5a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2" />
-                            </g>
-                        </svg>
-
-                        <p>{{ post.data.num_comments }}</p>
+                    <!-- post title + text -->
+                    <div>
+                        <h1 class="flex text-sm font-bold leading-5 text-black ">{{ post.data.title }}</h1>
+                        <p class="text-sm leading-5 line-clamp-3 xl:line-clamp-5">{{ post.data.selftext }}</p>
+                    </div>
+                    <!-- category tag -->
+                    <button v-if="post.data.link_flair_text"
+                        :style="{ backgroundColor: getFillColor(post.data.link_flair_background_color) }"
+                        class="p-1 my-2 text-sm rounded-xl">{{
+                            post.data.link_flair_text }}
                     </button>
-                    <!-- footer :share -->
-                    <button class="flex gap-1 p-2 bg-gray-400 rounded-2xl hover:bg-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
-                            class="h-5 gap-2 text-white bg-gray-400 rounded-full fill-current">
-                            <g transform="scale(1.33333,1.33333)">
-                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    d="m15 5l-3-3m0 0L9 5m3-3v12M6 9H4v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9h-2" />
-                            </g>
-                        </svg>
 
-                        <p>Condividi</p>
-                    </button>
+                    <!-- footer :votes -->
+                    <div class="flex h-6 gap-2 my-2 font-semibold text-white">
+                        <VoteButtons :score="post.data.score" />
+                        <!-- footer :comments -->
+                        <CommentsButton :score="post.data.num_comments" />
+                        <!-- footer :share -->
+                        <ShareButton />
+                    </div>
                 </div>
-            </div>
+            </NuxtLink>
         </div>
     </div>
 </template>
