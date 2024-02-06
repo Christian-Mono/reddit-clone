@@ -1,41 +1,9 @@
 <script setup lang="ts">
-
+import { getFillColor, formatTime } from '../utils/utils'
 const { data: posts } = await useFetch<RootObject>("https://www.reddit.com/r/Universitaly/hot.json")
 
 const subredditNamePrefixed = posts.value?.data.children[0].data.subreddit_name_prefixed;
 
-/* random user color */
-const getFillColor = (color: string | null) => {
-    // Se il colore è null, restituisci un colore predefinito
-    if (color === null) {
-        return '#ff33cc'; // Colore predefinito, puoi cambiarlo a tuo piacimento
-    }
-    // Altrimenti, restituisci il colore
-    return color;
-}
-
-const formatTime = (timestamp: number) => {
-    const now = new Date();
-    const postDate = new Date(timestamp * 1000); // Converti il timestamp in millisecondi
-    const secondsPast = Math.floor((now.getTime() - postDate.getTime()) / 1000);
-
-    if (secondsPast < 60) {
-        return `${secondsPast} seconds ago`;
-    }
-    if (secondsPast < 3600) {
-        return `${Math.floor(secondsPast / 60)} minutes ago`;
-    }
-    if (secondsPast <= 86400) {
-        return `${Math.floor(secondsPast / 3600)} hours ago`;
-    }
-    if (secondsPast > 86400) {
-        let day = postDate.getDate();
-        let monthMatch = postDate.toDateString().match(/ [a-zA-Z]*/);
-        let month = monthMatch ? monthMatch[0].replace(" ", "") : "";
-        let year = postDate.getFullYear() == now.getFullYear() ? "" : " " + postDate.getFullYear();
-        return `${day} ${month}${year}`;
-    }
-}
 
 interface Source {
     url: string;
