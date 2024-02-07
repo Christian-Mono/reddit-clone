@@ -1,37 +1,71 @@
 <template>
     <div class="mx-6 md:mx-[30%] my-6">
-        <NuxtLink to="/">
-            <div class="grid grid-cols-3 w-[50%]">
-                <img src="../public/assets/img/redditAvatar.png" alt="subredditLogo" class="h-12 row-span-2 rounded-full">
-
-                <h1 class="flex items-center col-span-2 gap-1 text-sm font-bold"> {{ subReddit }} <span
-                        class="items-center justify-center text-xs font-thin ">
-                        • {{
-                            formatTime(created)
-                        }}</span>
-                </h1>
-
-                <p class="flex items-center col-span-2 gap-1 text-sm font-semibold">{{ author }}</p>
-            </div>
-        </NuxtLink>
         <div>
-            <h2 class="items-center justify-center text-2xl font-bold"> {{ title }}</h2>
-            <button v-if="category" :style="{ backgroundColor: getFillColor(threadFlairColor) }"
-                class="items-center justify-center p-1 my-2 text-sm rounded-xl">{{ category }}
+            <div class="flex gap-x-2">
+                <NuxtLink to="/">
+                    <img src="../public/assets/img/redditAvatar.png" alt="subredditLogo"
+                        class="h-12 row-span-2 rounded-full">
+                </NuxtLink>
+                <div class="flex flex-col gap-y-1">
+                    <NuxtLink to="/">
+                        <h1 class="flex items-center col-span-2 gap-1 text-sm font-bold"> {{ subReddit }} <span
+                                class="items-center justify-center text-xs font-thin ">
+                                • {{
+                                    formatTime(created)
+                                }}</span>
+                        </h1>
+                    </NuxtLink>
+                    <p class="flex items-center col-span-2 gap-1 text-sm font-semibold">{{ author }}</p>
+                </div>
+            </div>
 
-            </button>
+            <div>
+                <h2 class="items-center justify-center text-2xl font-bold"> {{ title }}</h2>
+                <button v-if="category" :style="{ backgroundColor: getFillColor(threadFlairColor) }"
+                    class="items-center justify-center p-1 my-2 text-sm rounded-xl">{{ category }}
+
+                </button>
+            </div>
+            <div>
+                <p>{{ postText }}</p>
+                <div class="flex h-6 gap-2 my-2 font-semibold text-white">
+                    <VoteButtons :score="score" />
+                    <CommentsButton :score="numComments" />
+                    <ShareButton />
+                </div>
+            </div>
         </div>
-        <div>
-            <p>{{ postText }}</p>
-            <div class="flex h-6 gap-2 my-2 font-semibold text-white">
-                <VoteButtons :score="score" />
-                <CommentsButton :score="numComments" />
-                <ShareButton />
+        <!-- comments section -->
+        <div v-for="post in redditComments" :key="post.data.id">
+            <div v-for="comment in post.data.children" :key="comment.data.id" class="flex my-6 gap-x-2">
+                <div class="flex gap-2 ">
+                    <img src="/assets/icons/CibReddit.svg" alt="subredditLogo" class="h-12 row-span-2 rounded-full" />
+                    <div>
+                        <h1 class="flex items-center col-span-2 gap-1 text-sm font-bold">
+                            {{ comment.data.author }}
+                            <span class="items-center justify-center text-xs font-thin ">
+                                • {{ formatTime(comment.data.created) }}
+                            </span>
+                        </h1>
+                        <p class="flex items-center col-span-2 gap-1 text-sm font-semibold">
+                            {{ comment.data.body }}
+                        </p>
+                        <div class="flex h-6 gap-2 my-2 font-semibold text-white">
+                            <VoteButtons :score="comment.data.score" />
+                            <CommentsButton :score="comment.data.num_comments" />
+                            <ShareButton />
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
         </div>
     </div>
 </template>
 <script setup lang="ts">
+
+
 import { getFillColor, formatTime } from '../utils/utils'
 const props = defineProps<{
     id: string | string[]
@@ -39,6 +73,9 @@ const props = defineProps<{
 
 const { data: thread } = await useFetch<any>(`https://www.reddit.com/r/Universitaly/${props.id}.json`)
 
+const redditComments = computed(() => {
+    return thread.value ? thread.value : "";
+})
 const subReddit = ref('')
 const title = ref('')
 const author = ref('')
