@@ -1,4 +1,5 @@
 <template>
+    <Nav />
     <div class="mx-6 md:mx-[30%] my-6">
         <div>
             <div class="flex gap-x-2">
@@ -36,7 +37,7 @@
             </div>
         </div>
         <!-- comments section -->
-        <div v-for="post in redditComments" :key="post.data.id">
+        <div v-for="post in redditComments.slice(1)" :key="post.data.id">
             <div v-for="comment in post.data.children" :key="comment.data.id" class="flex my-6 gap-x-2">
                 <div class="flex gap-2 ">
                     <img src="/assets/icons/CibReddit.svg" alt="subredditLogo" class="h-12 row-span-2 rounded-full" />
@@ -51,9 +52,9 @@
                             {{ comment.data.body }}
                         </p>
                         <div class="flex h-6 gap-2 my-2 font-semibold text-white">
-                            <VoteButtons :score="comment.data.score" />
-                            <CommentsButton :score="comment.data.num_comments" />
-                            <ShareButton />
+                            <VoteButtons :score="comment.data.score" class="text-sm" />
+                            <CommentsButton score="Reply" class="text-sm" />
+                            <ShareButton class="text-sm" />
                         </div>
                     </div>
                 </div>
@@ -64,15 +65,14 @@
     </div>
 </template>
 <script setup lang="ts">
-
-
+/* imports */
 import { getFillColor, formatTime } from '../utils/utils'
 const props = defineProps<{
     id: string | string[]
 }>()
-
+/* API */
 const { data: thread } = await useFetch<any>(`https://www.reddit.com/r/Universitaly/${props.id}.json`)
-
+/* variables */
 const redditComments = computed(() => {
     return thread.value ? thread.value : "";
 })
@@ -86,7 +86,7 @@ const numComments = ref(0)
 const category = ref('')
 const threadFlairColor = ref('')
 const created = ref(0)
-
+/* I made these to track the variation of different single thread */
 watchEffect(() => {
     if (thread.value) {
         tag.value = thread.value[0].data.children[0].data.link_flair_text
