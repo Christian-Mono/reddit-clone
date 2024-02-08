@@ -8,16 +8,16 @@
                 <h2 class="text-2xl text-gray-600">info</h2>
                 <ul class="text-xs text-blue-700">
                     <li>
-                        <a href="" class="">blog</a>
+                        <NuxtLink to="https://www.redditinc.com/blog" target="_blank">blog</NuxtLink>
                     </li>
                     <li>
-                        <a href="">info</a>
+                        <NuxtLink to="https://www.redditinc.com/" target="_blank">about</NuxtLink>
                     </li>
                     <li>
-                        <a href="">pubblicità</a>
+                        <NuxtLink to="https://www.redditinc.com/advertising" target="_blank">advertising</NuxtLink>
                     </li>
                     <li>
-                        <a href="">careers</a>
+                        <NuxtLink to="https://www.redditinc.com/careers" target="_blank">careers</NuxtLink>
                     </li>
                 </ul>
             </div>
@@ -25,19 +25,21 @@
                 <h2 class="text-2xl text-gray-600">aiuto</h2>
                 <ul class="text-xs text-blue-700">
                     <li>
-                        <a href="">Regole del sito</a>
+                        <NuxtLink to="https://www.redditinc.com/policies/content-policy" target="_blank">site rules
+                        </NuxtLink>
                     </li>
                     <li>
-                        <a href="">Reddit help center</a>
+                        <NuxtLink to="https://support.reddithelp.com/hc/it" target="_blank">Reddit help center</NuxtLink>
                     </li>
                     <li>
-                        <a href="">reddiquette</a>
+                        <NuxtLink to="https://www.reddit.com/wiki/reddiquette" target="_blank">reddiquette</NuxtLink>
                     </li>
                     <li>
-                        <a href="">mod guidelines</a>
+                        <NuxtLink to="https://www.redditinc.com/policies/moderator-code-of-conduct" target="_blank">mod
+                            guidelines</NuxtLink>
                     </li>
                     <li>
-                        <a href="">contattaci</a>
+                        <NuxtLink to="https://www.reddit.com/contact/" target="_blank">contact us</NuxtLink>
                     </li>
                 </ul>
             </div>
@@ -45,13 +47,17 @@
                 <h2 class="text-2xl text-gray-600">app & strumenti</h2>
                 <ul class="text-xs text-blue-700">
                     <li>
-                        <a href="">blog</a>
+                        <NuxtLink to="https://apps.apple.com/us/app/reddit/id1064216828" target="_blank">Reddit for iPhone
+                        </NuxtLink>
                     </li>
                     <li>
-                        <a href="">info</a>
+                        <NuxtLink to="https://play.google.com/store/apps/details?id=com.reddit.frontpage&pli=1"
+                            target="_blank">Reddit for Android
+                        </NuxtLink>
                     </li>
                     <li>
-                        <a href="">pubblicità</a>
+                        <NuxtLink to="https://www.reddit.com/" target="_blank">mobile website
+                        </NuxtLink>
                     </li>
 
                 </ul>
@@ -60,7 +66,7 @@
                 <h2 class="text-2xl text-gray-600"> &lt3</h2>
                 <ul class="text-xs text-yellow-500">
                     <li>
-                        <a href="">reddit premium</a>
+                        <NuxtLink to="https://www.reddit.com/premium/" target="_blank">reddit premium</NuxtLink>
                     </li>
 
                 </ul>

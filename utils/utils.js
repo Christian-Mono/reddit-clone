@@ -30,3 +30,17 @@ export const formatTime = timestamp => {
         return `${day} ${month}${year}`
     }
 }
+
+export function watchSearchReddit(searchSubReddit, threads) {
+    watch(
+        () => searchSubReddit,
+        async newSubReddit => {
+            if (newSubReddit) {
+                // Fetch new data when searchTerm changes
+                await threads.fetch(
+                    `https://www.reddit.com/r/${newSubReddit}.json`
+                )
+            }
+        }
+    )
+}

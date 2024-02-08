@@ -1,5 +1,14 @@
 <script setup lang="ts">
 
+const props = defineProps({
+    searchSubReddit: {
+        type: String,
+        default: '',
+    },
+});
+
+const search = ref('')
+
 </script>
 
 
@@ -9,7 +18,7 @@
         <!-- LOGO -->
         <div class="flex items-center h-14 w-1/4 py-1.5 px-3 gap-x-2 ">
             <NuxtLink class="flex gap-2" to="/">
-                <img src="../public/assets/img/LogoMono.jpg" class="h-8 rounded-3xl" alt="logo" />
+                <img src="/assets/img/LogoMono.jpg" class="h-8 rounded-3xl" alt="logo" />
                 <p class="hidden my-auto text-xl font-bold text-white md:flex">Moneddit</p>
             </NuxtLink>
         </div>
@@ -21,13 +30,15 @@
                 <path fill="#currentColor"
                     d="M1014.64 969.04L703.71 656.207c57.952-69.408 92.88-158.704 92.88-256.208c0-220.912-179.088-400-400-400s-400 179.088-400 400s179.088 400 400 400c100.368 0 192.048-37.056 262.288-98.144l310.496 312.448c12.496 12.497 32.769 12.497 45.265 0c12.48-12.496 12.48-32.752 0-45.263zM396.59 736.527c-185.856 0-336.528-150.672-336.528-336.528S210.734 63.471 396.59 63.471c185.856 0 336.528 150.672 336.528 336.528S582.446 736.527 396.59 736.527" />
             </svg>
-            <input
+            <!-- pass the emit to parent compont (index) -->
+            <input v-model="search" @keyup.enter="$emit('search', search)"
                 class="w-full h-6 font-bold bg-gray-400 border border-gray-400 group-hover:border-gray-200 focus:outline-none text-slate-200 placeholder:text-slate-200 group-hover:text-black group-hover:bg-gray-200"
                 placeholder="Search on Reddit" />
+
         </div>
-        <!-- BUTTONS -->
-        <div class="flex w-[25%] group gap-x-4 my-1.5">
-            <!-- DOWNLOAD APP -->
+        <!-- BUTTONS  -->
+        <div class=" flex w-[25%] group gap-x-4 my-1.5">
+            <!-- BUTTON: download -->
             <button
                 class="flex items-center gap-1 p-2 text-sm font-semibold text-white bg-gray-400 group-hover:text-black group rounded-3xl hover:bg-gray-200">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
@@ -37,10 +48,10 @@
                 </svg>
                 Download
                 App</button>
-            <!-- LOGIN -->
+            <!-- BUTTON: login -->
             <button
                 class="flex items-center justify-center w-20 gap-1 p-2 text-sm font-semibold text-white bg-black group rounded-3xl hover:bg-gray-200 hover:text-slate-600">Login</button>
-            <!-- MORE OPTIONS -->
+            <!-- BUTTON: more option -->
             <button
                 class="flex items-center gap-1 px-4 text-sm font-semibold text-white rounded-full hover:bg-gray-400 bg-slate-600 group">•••</button>
         </div>

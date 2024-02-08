@@ -1,8 +1,19 @@
 <script setup lang="ts">
 import { getFillColor, formatTime } from '../utils/utils'
-const { data: posts } = await useFetch<RootObject>("https://www.reddit.com/r/Universitaly/hot.json")
+const props = defineProps({
+    searchSubReddit: {
+        type: String,
+        default: '',
+    },
+});
+const posts = ref<any>({})
 
-const subredditNamePrefixed = posts.value?.data.children[0].data.subreddit_name_prefixed;
+watchEffect(async () => {
+    const { data } = await useFetch<RootObject>(`https://www.reddit.com/r/${props.searchSubReddit}/hot.json`)
+    console.log(data)
+    posts.value = data
+});
+
 
 
 interface Source {
@@ -358,14 +369,16 @@ const json: RootObject = {
     <div class="mx-6 md:mx-[30%] ">
         <!-- reddit header -->
         <div class="relative pt-6 mb-8 ">
-            <img src="../public/assets/img/redditAvatar.png" alt="subreddit-logo"
+            <img src="/assets/img/redditAvatar.png" alt="subreddit-logo"
                 class="absolute bottom-0 h-20 transform border-2 border-solid rounded-full -translate-y-1/4">
-            <div class="relative px-6 text-3xl font-bold -translate-y-1/2 left-16"> {{ subredditNamePrefixed }}
+            <div class="relative px-6 text-3xl font-bold -translate-y-1/2 left-16"> {{ posts.value ?
+                posts.value?.data.children[0].data.subreddit_name_prefixed : "Not available" }}
             </div>
         </div>
+
         <!-- post section -->
-        <div v-for="post in posts?.data.children" class="my-2 ">
-            <NuxtLink :to="'threads/' + post.data.id">
+        <div v-for="post in posts.value?.data.children" class="my-2 ">
+            <NuxtLink :to="'threads/' + props.searchSubReddit + '/' + post.data.id">
                 <!-- avatar + author + timestamp -->
                 <hr class="flex items-center justify-center border-y-grey-900">
                 <div class="px-4 py-2 hover:bg-gray-100 rounded-xl">
@@ -404,5 +417,7 @@ const json: RootObject = {
                 </div>
             </NuxtLink>
         </div>
+
+
     </div>
 </template>

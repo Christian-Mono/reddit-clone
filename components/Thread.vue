@@ -3,19 +3,18 @@
     <div class="mx-6 md:mx-[30%] my-6">
         <div>
             <div class="flex gap-x-2">
-                <NuxtLink to="/">
-                    <img src="../public/assets/img/redditAvatar.png" alt="subredditLogo"
-                        class="h-12 row-span-2 rounded-full">
-                </NuxtLink>
+                <button @click="goBack()"> <!-- //ex NuxtLink -->
+                    <img src="/assets/img/redditAvatar.png" alt="subredditLogo" class="h-12 row-span-2 rounded-full">
+                </button>
                 <div class="flex flex-col gap-y-1">
-                    <NuxtLink to="/">
+                    <button @click="goBack()">
                         <h1 class="flex items-center col-span-2 gap-1 text-sm font-bold"> {{ subReddit }} <span
                                 class="items-center justify-center text-xs font-thin ">
                                 • {{
                                     formatTime(created)
                                 }}</span>
                         </h1>
-                    </NuxtLink>
+                    </button>
                     <p class="flex items-center col-span-2 gap-1 text-sm font-semibold">{{ author }}</p>
                 </div>
             </div>
@@ -68,10 +67,17 @@
 /* imports */
 import { getFillColor, formatTime } from '../utils/utils'
 const props = defineProps<{
-    id: string | string[]
+    id: string | string[],
+    subRedditName: string | string[]
 }>()
 /* API */
-const { data: thread } = await useFetch<any>(`https://www.reddit.com/r/Universitaly/${props.id}.json`)
+const { data: thread } = await useFetch<any>(`https://www.reddit.com/r/${props.subRedditName}/${props.id}.json`)
+/* useRouter inizialized */
+const router = useRouter()
+/*  */
+const goBack = () => {
+    router.back()
+}
 /* variables */
 const redditComments = computed(() => {
     return thread.value ? thread.value : "";
