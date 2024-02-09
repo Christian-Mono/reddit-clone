@@ -1,13 +1,6 @@
 <script setup lang="ts">
 
-const props = defineProps({
-    searchSubReddit: {
-        type: String,
-        default: '',
-    },
-});
-
-const search = ref('')
+const search = defineModel('')
 
 </script>
 

@@ -1,21 +1,13 @@
 <template>
     <div>
-        <Nav :searchSubReddit="searchSubReddit" @search="(e: any) => searchThread(e)" />
-        <Threads :searchSubReddit="searchSubReddit" />
-        <Footer />
+        <Home :searchSubReddit="searchSubReddit" />
     </div>
 </template>
 <script setup lang="ts">
 
-const route = useRoute()
-console.log(route.params) // usare route.params per salvare la posizione precedente (ricavare parametri)
 
-const searchSubReddit = ref('Universitaly'); //as default we load universitaly
+const searchSubReddit = ref('popular')
 
-
-const searchThread = (value: string) => {
-    console.log("index page valore", value)
-    return searchSubReddit.value = value
-}
+console.log("INDEX")
 
 </script>

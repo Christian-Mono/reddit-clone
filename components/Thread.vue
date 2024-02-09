@@ -1,5 +1,50 @@
+<script setup lang="ts">
+/* imports */
+import { getFillColor, formatTime } from '../utils/utils'
+const props = defineProps<{
+    id: string | string[],
+    subRedditName: string | string[]
+}>()
+/* API */
+const { data: thread } = await useFetch<any>(`https://www.reddit.com/r/${props.subRedditName}/${props.id}.json`)
+/* useRouter inizialized */
+const router = useRouter()
+/*  */
+const goBack = () => {
+    router.back()
+}
+/* variables */
+const redditComments = computed(() => {
+    return thread.value ? thread.value : "";
+})
+const subReddit = ref('')
+const title = ref('')
+const author = ref('')
+const tag = ref('')
+const postText = ref('')
+const score = ref(1)
+const numComments = ref(0)
+const category = ref('')
+const threadFlairColor = ref('')
+const created = ref(0)
+/* I made these to track the variation of different single thread */
+watchEffect(() => {
+    if (thread.value) {
+        tag.value = thread.value[0].data.children[0].data.link_flair_text
+        title.value = thread.value[0].data.children[0].data.title
+        author.value = thread.value[0].data.children[0].data.author
+        subReddit.value = thread.value[0].data.children[0].data.subreddit_name_prefixed
+        postText.value = thread.value[0].data.children[0].data.selftext
+        score.value = thread.value[0].data.children[0].data.score
+        numComments.value = thread.value[0].data.children[0].data.num_comments
+        category.value = thread.value[0].data.children[0].data.link_flair_text
+        threadFlairColor.value = thread.value[0].data.children[0].data.link_flair_background_color
+        created.value = thread.value[0].data.children[0].data.created
+    }
+})
+</script>
+
 <template>
-    <Nav />
     <div class="mx-6 md:mx-[30%] my-6">
         <div>
             <div class="flex gap-x-2">
@@ -63,50 +108,3 @@
         </div>
     </div>
 </template>
-<script setup lang="ts">
-/* imports */
-import { getFillColor, formatTime } from '../utils/utils'
-const props = defineProps<{
-    id: string | string[],
-    subRedditName: string | string[]
-}>()
-/* API */
-const { data: thread } = await useFetch<any>(`https://www.reddit.com/r/${props.subRedditName}/${props.id}.json`)
-/* useRouter inizialized */
-const router = useRouter()
-/*  */
-const goBack = () => {
-    router.back()
-}
-/* variables */
-const redditComments = computed(() => {
-    return thread.value ? thread.value : "";
-})
-const subReddit = ref('')
-const title = ref('')
-const author = ref('')
-const tag = ref('')
-const postText = ref('')
-const score = ref(1)
-const numComments = ref(0)
-const category = ref('')
-const threadFlairColor = ref('')
-const created = ref(0)
-/* I made these to track the variation of different single thread */
-watchEffect(() => {
-    if (thread.value) {
-        tag.value = thread.value[0].data.children[0].data.link_flair_text
-        title.value = thread.value[0].data.children[0].data.title
-        author.value = thread.value[0].data.children[0].data.author
-        subReddit.value = thread.value[0].data.children[0].data.subreddit_name_prefixed
-        postText.value = thread.value[0].data.children[0].data.selftext
-        score.value = thread.value[0].data.children[0].data.score
-        numComments.value = thread.value[0].data.children[0].data.num_comments
-        category.value = thread.value[0].data.children[0].data.link_flair_text
-        threadFlairColor.value = thread.value[0].data.children[0].data.link_flair_background_color
-        created.value = thread.value[0].data.children[0].data.created
-    }
-})
-
-
-</script>
