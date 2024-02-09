@@ -373,9 +373,7 @@ const json: RootObject = {
 
         <!-- post section -->
         <div v-for="post in posts.value?.data.children" class="my-2 ">
-            <!-- QUA DECIDO IL ROUTING
-            FIXARE IL PERCORSO SIA DALL'INDEX CHE DA THREADS
-            -->
+
             <NuxtLink :to="subRedditPath.path + '/id/' + post.data.id">
                 <!-- avatar + author + timestamp -->
                 <hr class="flex items-center justify-center border-y-grey-900">
@@ -403,6 +401,12 @@ const json: RootObject = {
                         class="p-1 my-2 text-sm rounded-xl">{{
                             post.data.link_flair_text }}
                     </button>
+                    <div>
+
+                        <img v-if="post.data.url_overridden_by_dest" :src="post.data.url_overridden_by_dest" alt="Video"
+                            class="w-auto h-auto " />
+
+                    </div>
 
                     <!-- footer :votes -->
                     <div class="flex h-6 gap-2 my-2 font-semibold text-white">

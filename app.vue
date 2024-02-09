@@ -13,8 +13,6 @@ const searchSubReddit = ref('popular'); //as default we load popular posts
 /* const props = defineProps<{ searchSubReddit: string }>() */
 
 const searchThread = (value: string) => {
-  console.log("app component value", value)
-
   navigateTo('/r/' + value)
   return searchSubReddit.value = value
 }

@@ -27,6 +27,7 @@ const numComments = ref(0)
 const category = ref('')
 const threadFlairColor = ref('')
 const created = ref(0)
+const image = ref()
 /* I made these to track the variation of different single thread */
 watchEffect(() => {
     if (thread.value) {
@@ -40,6 +41,7 @@ watchEffect(() => {
         category.value = thread.value[0].data.children[0].data.link_flair_text
         threadFlairColor.value = thread.value[0].data.children[0].data.link_flair_background_color
         created.value = thread.value[0].data.children[0].data.created
+        image.value = thread.value[0].data.children[0].data?.url_overridden_by_dest
     }
 })
 </script>
@@ -48,7 +50,7 @@ watchEffect(() => {
     <div class="mx-6 md:mx-[30%] my-6">
         <div>
             <div class="flex gap-x-2">
-                <button @click="goBack()"> <!-- //ex NuxtLink -->
+                <button @click="goBack()">
                     <img src="/assets/img/redditAvatar.png" alt="subredditLogo" class="h-12 row-span-2 rounded-full">
                 </button>
                 <div class="flex flex-col gap-y-1">
@@ -68,9 +70,9 @@ watchEffect(() => {
                 <h2 class="items-center justify-center text-2xl font-bold"> {{ title }}</h2>
                 <button v-if="category" :style="{ backgroundColor: getFillColor(threadFlairColor) }"
                     class="items-center justify-center p-1 my-2 text-sm rounded-xl">{{ category }}
-
                 </button>
             </div>
+            <img v-if="image" :src="image" alt="Video" class="w-auto h-auto " />
             <div>
                 <p>{{ postText }}</p>
                 <div class="flex h-6 gap-2 my-2 font-semibold text-white">
